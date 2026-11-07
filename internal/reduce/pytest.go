@@ -25,9 +25,13 @@ type pytestSummary struct {
 }
 
 type pytestTest struct {
-	NodeID  string      `json:"nodeid"`
-	Outcome string      `json:"outcome"`
-	Call    *pytestCall `json:"call"`
+	NodeID string `json:"nodeid"`
+	// Lineno is the 0-based line of the test definition in its file.
+	Lineno   int         `json:"lineno"`
+	Outcome  string      `json:"outcome"`
+	Call     *pytestCall `json:"call"`
+	Setup    *pytestCall `json:"setup"`
+	Teardown *pytestCall `json:"teardown"`
 }
 
 type pytestCall struct {
@@ -72,11 +76,19 @@ func parsePytestJSON(data []byte) (*parseResult, error) {
 		if t.Outcome != "failed" && t.Outcome != "error" {
 			continue
 		}
+		// A failure can happen in setup, in the test body, or in
+		// teardown. The failing stage carries the longrepr; a test
+		// that fails in setup has no call.longrepr at all.
 		longrepr := ""
-		if t.Call != nil && len(t.Call.Longrepr) > 0 {
-			longrepr = longreprString(t.Call.Longrepr)
+		for _, stage := range []*pytestCall{t.Call, t.Setup, t.Teardown} {
+			if stage != nil && len(stage.Longrepr) > 0 {
+				if lr := longreprString(stage.Longrepr); lr != "" {
+					longrepr = lr
+					break
+				}
+			}
 		}
-		file, line := pytestNodeFileLine(t.NodeID, longrepr)
+		file, line := pytestNodeFileLine(t.NodeID, longrepr, t.Lineno)
 		msg := pytestMessage(longrepr)
 		if msg == "" {
 			msg = "Test failed: " + t.NodeID
@@ -138,18 +150,24 @@ func longreprString(raw json.RawMessage) string {
 	return string(raw)
 }
 
-func pytestNodeFileLine(nodeid, longrepr string) (string, int) {
+func pytestNodeFileLine(nodeid, longrepr string, lineno int) (string, int) {
 	// nodeid: tests/test_x.py::TestClass::test_name  (or with ::line?)
 	file := nodeid
 	if i := strings.Index(nodeid, "::"); i >= 0 {
 		file = nodeid[:i]
 	}
 	if f, ln := pyFileLineFromText(longrepr); f != "" {
-		// Prefer the traceback location when it points at the test file.
+		// Prefer the traceback location: it is the failing assert
+		// line, while lineno is only the test definition line.
 		if f == file || strings.HasSuffix(f, file) {
 			return f, ln
 		}
 		return f, ln
+	}
+	// Fall back to the test definition line. lineno is 0-based, so
+	// the 1-based line is lineno+1.
+	if lineno > 0 {
+		return file, lineno + 1
 	}
 	return file, 0
 }

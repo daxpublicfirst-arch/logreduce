@@ -6,25 +6,44 @@
       "specs": [
         {
           "title": "logs in",
+          "file": "tests/login.spec.ts",
+          "line": 14,
           "tests": [
             {
               "title": "logs in",
+              "status": "unexpected",
               "results": [
                 {
                   "status": "failed",
-                  "location": {"file": "tests/login.spec.ts", "line": 15},
-                  "error": {"message": "Error: expect(page).toHaveTitle(/Dashboard/) failed\nTimeout 5000ms exceeded."}
+                  "error": {
+                    "message": "Error: expect(page).toHaveTitle(/Dashboard/) failed\nTimeout 5000ms exceeded.",
+                    "location": {
+                      "file": "tests/login.spec.ts",
+                      "line": 15,
+                      "column": 11
+                    }
+                  }
                 }
               ]
             },
             {
               "title": "logs out",
-              "results": [{"status": "passed"}]
+              "status": "expected",
+              "results": [
+                {
+                  "status": "passed"
+                }
+              ]
             }
           ]
         }
       ]
     }
   ],
-  "stats": {"total": 2, "expected": 1, "unexpected": 1, "skipped": 0}
+  "stats": {
+    "expected": 1,
+    "unexpected": 1,
+    "flaky": 0,
+    "skipped": 0
+  }
 }

@@ -3,6 +3,7 @@ package reduce
 import (
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -401,6 +402,95 @@ func TestRealWorldFixtures(t *testing.T) {
 		for i, w := range c.want {
 			if res.findings[i].File != w.file || res.findings[i].Line != w.line {
 				t.Fatalf("%s %s finding %d: want %s:%d, got %s:%d", c.kind, c.file, i, w.file, w.line, res.findings[i].File, res.findings[i].Line)
+			}
+		}
+	}
+
+	// Public real samples (see docs/REAL_WORLD.md for sources):
+	// Playwright JSON reports from daun/playwright-report-summary,
+	// a real TRX from zyborg/dotnet-tests-report, and the
+	// pytest-json-report sample from numirias/pytest-json-report.
+	// The Playwright valid sample has 2 findings, both at the same
+	// error location (two test runs of the same failing test).
+	{
+		data, err := os.ReadFile("../../fixtures-real/playwright/valid.json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		res, err := parse("playwright", data)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(res.findings) != 2 {
+			t.Fatalf("playwright valid: want 2 findings, got %d", len(res.findings))
+		}
+		for _, f := range res.findings {
+			if f.File != "/project/tests/functional/add.spec.ts" || f.Line != 10 {
+				t.Fatalf("playwright valid: want /project/tests/functional/add.spec.ts:10, got %s:%d", f.File, f.Line)
+			}
+		}
+		if res.summary.Total != 14 || res.summary.Failed != 2 || res.summary.Passed != 11 {
+			t.Fatalf("playwright valid summary wrong: %+v", res.summary)
+		}
+	}
+	{
+		// The nested sample is all green: 45 tests, 0 findings.
+		data, err := os.ReadFile("../../fixtures-real/playwright/nested.json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		res, err := parse("playwright", data)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(res.findings) != 0 {
+			t.Fatalf("playwright nested: want 0 findings, got %d", len(res.findings))
+		}
+		if res.summary.Total != 45 || res.summary.Passed != 45 {
+			t.Fatalf("playwright nested summary wrong: %+v", res.summary)
+		}
+	}
+	{
+		data, err := os.ReadFile("../../fixtures-real/trx/sample.trx")
+		if err != nil {
+			t.Fatal(err)
+		}
+		res, err := parse("trx", data)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(res.findings) != 1 {
+			t.Fatalf("trx sample: want 1 finding, got %d", len(res.findings))
+		}
+		wantFile := "C:/local/prj/bek/ACMESharp/ACMESharpCore/test/PKISharp.SimplePKI.UnitTests/PkiCertificateSigningRequestTests.cs"
+		if res.findings[0].File != wantFile || res.findings[0].Line != 284 {
+			t.Fatalf("trx sample: want %s:284, got %s:%d", wantFile, res.findings[0].File, res.findings[0].Line)
+		}
+		if res.summary.Total != 48 || res.summary.Failed != 1 || res.summary.Passed != 47 {
+			t.Fatalf("trx sample summary wrong: %+v", res.summary)
+		}
+	}
+	{
+		data, err := os.ReadFile("../../fixtures-real/pytest-sample/input.json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		res, err := parse("pytest", data)
+		if err != nil {
+			t.Fatal(err)
+		}
+		wantLines := []int{17, 22, 32, 55, 70}
+		if len(res.findings) != len(wantLines) {
+			t.Fatalf("pytest sample: want %d findings, got %d: %+v", len(wantLines), len(res.findings), res.findings)
+		}
+		// parse() returns findings in test order; Reduce sorts them
+		// by file,line before output, so sort here before comparing.
+		sort.Slice(res.findings, func(i, j int) bool {
+			return res.findings[i].Line < res.findings[j].Line
+		})
+		for i, ln := range wantLines {
+			if res.findings[i].File != "test_create_report.py" || res.findings[i].Line != ln {
+				t.Fatalf("pytest sample finding %d: want test_create_report.py:%d, got %s:%d", i, ln, res.findings[i].File, res.findings[i].Line)
 			}
 		}
 	}
