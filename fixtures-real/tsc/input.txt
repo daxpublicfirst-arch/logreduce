@@ -1,0 +1,2 @@
+app.ts(1,7): error TS2322: Type 'string' is not assignable to type 'number'.
+app.ts(2,17): error TS2304: Cannot find name 'foo'.

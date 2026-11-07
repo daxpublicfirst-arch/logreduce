@@ -1,0 +1,13 @@
+{"Time":"2026-11-07T20:23:44.705973521Z","Action":"start","Package":"example.com/realworld"}
+{"Time":"2026-11-07T20:23:44.770207221Z","Action":"run","Package":"example.com/realworld","Test":"TestAdd"}
+{"Time":"2026-11-07T20:23:44.770327782Z","Action":"output","Package":"example.com/realworld","Test":"TestAdd","Output":"=== RUN   TestAdd\n"}
+{"Time":"2026-11-07T20:23:44.770371557Z","Action":"output","Package":"example.com/realworld","Test":"TestAdd","Output":"    main_test.go:7: expected 2, got 3\n"}
+{"Time":"2026-11-07T20:23:44.770386059Z","Action":"output","Package":"example.com/realworld","Test":"TestAdd","Output":"--- FAIL: TestAdd (0.00s)\n"}
+{"Time":"2026-11-07T20:23:44.770393931Z","Action":"fail","Package":"example.com/realworld","Test":"TestAdd","Elapsed":0}
+{"Time":"2026-11-07T20:23:44.770403545Z","Action":"run","Package":"example.com/realworld","Test":"TestSub"}
+{"Time":"2026-11-07T20:23:44.770409164Z","Action":"output","Package":"example.com/realworld","Test":"TestSub","Output":"=== RUN   TestSub\n"}
+{"Time":"2026-11-07T20:23:44.770415633Z","Action":"output","Package":"example.com/realworld","Test":"TestSub","Output":"--- PASS: TestSub (0.00s)\n"}
+{"Time":"2026-11-07T20:23:44.770421522Z","Action":"pass","Package":"example.com/realworld","Test":"TestSub","Elapsed":0}
+{"Time":"2026-11-07T20:23:44.770427481Z","Action":"output","Package":"example.com/realworld","Output":"FAIL\n"}
+{"Time":"2026-11-07T20:23:44.771954972Z","Action":"output","Package":"example.com/realworld","Output":"FAIL\texample.com/realworld\t0.065s\n"}
+{"Time":"2026-11-07T20:23:44.772042193Z","Action":"fail","Package":"example.com/realworld","Elapsed":0.066}

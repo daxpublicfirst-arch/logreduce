@@ -15,6 +15,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -37,6 +38,28 @@ Kinds: trx, vitest, playwright, tsc, eslint, pytest, go-test, generic
 
 Exit codes: 0 success, 1 findings present, 2 usage or input error, 3 tool failure.
 `
+
+// reduceTimeout is the plugin limit (plugin.toml limits.timeout_s).
+// The harness also enforces it; the tool enforces it itself so a
+// timeout produces a parseable error JSON (code TIMEOUT, exit 3)
+// instead of the process being killed with no output at all.
+const reduceTimeout = 60 * time.Second
+
+var errTimeout = errors.New("reduce timed out")
+
+// withTimeout runs fn and returns errTimeout if it does not finish
+// within timeout. fn may keep running in its goroutine after a
+// timeout; the caller exits the process right after, which stops it.
+func withTimeout(timeout time.Duration, fn func() error) error {
+	done := make(chan error, 1)
+	go func() { done <- fn() }()
+	select {
+	case err := <-done:
+		return err
+	case <-time.After(timeout):
+		return errTimeout
+	}
+}
 
 type telemetry struct {
 	Tool        string `json:"tool"`
@@ -315,7 +338,21 @@ func cmdReduce(args []string, start time.Time) int {
 	if info, err := os.Stat(logPath); err == nil {
 		inputBytes = info.Size()
 	}
-	_, out, err := reduce.Reduce(kind, logPath, outDir, start)
+	var out []byte
+	var err error
+	if werr := withTimeout(reduceTimeout, func() error {
+		var rerr error
+		_, out, rerr = reduce.Reduce(kind, logPath, outDir, start)
+		err = rerr
+		return rerr
+	}); werr != nil {
+		if werr == errTimeout {
+			code, n := printErrorLen(&reduce.ToolError{Code: "TIMEOUT", Blocked: "reduce timed out after 60s", Fix: "Split the log into smaller parts and run logreduce on each part.", IfThatFails: "Run with --kind generic on the largest part first.", Exit: 3})
+			emitTelemetry("reduce", start, inputBytes, n, false)
+			return code
+		}
+		err = werr
+	}
 	if err != nil {
 		if te, ok := err.(*reduce.ToolError); ok {
 			code, n := printErrorLen(te)

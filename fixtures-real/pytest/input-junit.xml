@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="1" tests="3" time="0.071" timestamp="2026-11-07T20:24:14.299430+00:00" hostname="htch-runtime"><testcase classname="test_math" name="test_add" time="0.000" /><testcase classname="test_math" name="test_divide" time="0.000"><failure message="ZeroDivisionError: division by zero">def test_divide():
+&gt;       assert 1 / 0 == 0  # noqa: B018
+               ^^^^^
+E       ZeroDivisionError: division by zero
+
+test_math.py:5: ZeroDivisionError</failure></testcase><testcase classname="test_math" name="test_skipped" time="0.036"><skipped type="pytest.skip" message="not today">/home/hatch/retest-clean/realworld/pytest-proj/test_math.py:9: not today</skipped></testcase></testsuite></testsuites>
