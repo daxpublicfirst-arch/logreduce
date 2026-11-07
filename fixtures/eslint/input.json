@@ -1,0 +1,9 @@
+[
+  {
+    "filePath": "src/app.ts",
+    "messages": [
+      {"line": 5, "severity": 2, "message": "'x' is not defined.", "ruleId": "no-undef"},
+      {"line": 9, "severity": 1, "message": "'y' is defined but never used.", "ruleId": "no-unused-vars"}
+    ]
+  }
+]

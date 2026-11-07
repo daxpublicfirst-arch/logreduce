@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "tool": "logreduce",
+  "version": "0.1.0",
+  "kind": "tsc",
+  "summary": {
+    "total": 3,
+    "passed": 0,
+    "failed": 2,
+    "errors": 2,
+    "skipped": 0
+  },
+  "findings": [
+    {
+      "file": "src/app.ts",
+      "line": 10,
+      "severity": "error",
+      "message": "TS2322: Type 'string' is not assignable to type 'number'."
+    },
+    {
+      "file": "src/app.ts",
+      "line": 20,
+      "severity": "error",
+      "message": "TS2304: Cannot find name 'foo'."
+    },
+    {
+      "file": "src/util.ts",
+      "line": 3,
+      "severity": "warning",
+      "message": "TS6133: 'unused' is declared but its value is never read."
+    }
+  ],
+  "unparsed": 0,
+  "full_log": "FULL_LOG",
+  "truncated": false,
+  "duration_ms": 0
+}

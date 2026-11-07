@@ -1,0 +1,5 @@
+2026-01-01 build started
+src/main.go:42: error: undefined variable foo
+all good here
+panic: runtime error: index out of range
+  goroutine 1 [running]:

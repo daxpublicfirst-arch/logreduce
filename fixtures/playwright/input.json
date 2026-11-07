@@ -1,0 +1,30 @@
+{
+  "suites": [
+    {
+      "title": "login.spec.ts",
+      "suites": [],
+      "specs": [
+        {
+          "title": "logs in",
+          "tests": [
+            {
+              "title": "logs in",
+              "results": [
+                {
+                  "status": "failed",
+                  "location": {"file": "tests/login.spec.ts", "line": 15},
+                  "error": {"message": "Error: expect(page).toHaveTitle(/Dashboard/) failed\nTimeout 5000ms exceeded."}
+                }
+              ]
+            },
+            {
+              "title": "logs out",
+              "results": [{"status": "passed"}]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "stats": {"total": 2, "expected": 1, "unexpected": 1, "skipped": 0}
+}

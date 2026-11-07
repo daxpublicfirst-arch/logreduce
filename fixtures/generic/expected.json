@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "tool": "logreduce",
+  "version": "0.1.0",
+  "kind": "generic",
+  "summary": {
+    "total": 2,
+    "passed": 0,
+    "failed": 2,
+    "errors": 2,
+    "skipped": 0
+  },
+  "findings": [
+    {
+      "file": "",
+      "line": 0,
+      "severity": "error",
+      "message": "panic: runtime error: index out of range",
+      "context": [
+        "panic: runtime error: index out of range",
+        "goroutine 1 [running]:"
+      ]
+    },
+    {
+      "file": "src/main.go",
+      "line": 42,
+      "severity": "error",
+      "message": "src/main.go:42: error: undefined variable foo",
+      "context": [
+        "src/main.go:42: error: undefined variable foo",
+        "all good here",
+        "panic: runtime error: index out of range",
+        "goroutine 1 [running]:"
+      ]
+    }
+  ],
+  "unparsed": 0,
+  "full_log": "FULL_LOG",
+  "truncated": false,
+  "duration_ms": 0
+}

@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "tool": "logreduce",
+  "version": "0.1.0",
+  "kind": "playwright",
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "findings": [
+    {
+      "file": "tests/login.spec.ts",
+      "line": 15,
+      "severity": "error",
+      "message": "Error: expect(page).toHaveTitle(/Dashboard/) failed",
+      "test": "login.spec.ts logs in",
+      "context": [
+        "Error: expect(page).toHaveTitle(/Dashboard/) failed",
+        "Timeout 5000ms exceeded."
+      ]
+    }
+  ],
+  "unparsed": 0,
+  "full_log": "FULL_LOG",
+  "truncated": false,
+  "duration_ms": 0
+}

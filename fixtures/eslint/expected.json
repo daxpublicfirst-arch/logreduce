@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "tool": "logreduce",
+  "version": "0.1.0",
+  "kind": "eslint",
+  "summary": {
+    "total": 2,
+    "passed": 0,
+    "failed": 1,
+    "errors": 1,
+    "skipped": 0
+  },
+  "findings": [
+    {
+      "file": "src/app.ts",
+      "line": 5,
+      "severity": "error",
+      "message": "'x' is not defined. (no-undef)"
+    },
+    {
+      "file": "src/app.ts",
+      "line": 9,
+      "severity": "warning",
+      "message": "'y' is defined but never used. (no-unused-vars)"
+    }
+  ],
+  "unparsed": 0,
+  "full_log": "FULL_LOG",
+  "truncated": false,
+  "duration_ms": 0
+}

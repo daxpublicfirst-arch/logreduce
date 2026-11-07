@@ -1,0 +1,7 @@
+{"Time":"2026-01-01T00:00:00Z","Action":"run","Package":"example.com/m","Test":"TestAdd"}
+{"Time":"2026-01-01T00:00:00Z","Action":"output","Package":"example.com/m","Test":"TestAdd","Output":"=== RUN   TestAdd\n"}
+{"Time":"2026-01-01T00:00:00Z","Action":"output","Package":"example.com/m","Test":"TestAdd","Output":"    main_test.go:10: expected 2, got 3\n"}
+{"Time":"2026-01-01T00:00:00Z","Action":"output","Package":"example.com/m","Test":"TestAdd","Output":"--- FAIL: TestAdd (0.00s)\n"}
+{"Time":"2026-01-01T00:00:00Z","Action":"fail","Package":"example.com/m","Test":"TestAdd"}
+{"Time":"2026-01-01T00:00:00Z","Action":"run","Package":"example.com/m","Test":"TestSub"}
+{"Time":"2026-01-01T00:00:00Z","Action":"pass","Package":"example.com/m","Test":"TestSub"}

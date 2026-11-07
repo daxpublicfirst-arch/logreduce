@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "tool": "logreduce",
+  "version": "0.1.0",
+  "kind": "trx",
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "findings": [
+    {
+      "file": "C:/work/calc/CalculatorTests.cs",
+      "line": 42,
+      "severity": "error",
+      "message": "Assert.Equal() Failure: Values differ",
+      "test": "CalculatorTests.Divides",
+      "context": [
+        "Assert.Equal() Failure: Values differ",
+        "Expected: 2",
+        "Actual: 3",
+        "at CalculatorTests.Divides() in C:\\work\\calc\\CalculatorTests.cs:line 42",
+        "at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)"
+      ]
+    }
+  ],
+  "unparsed": 0,
+  "full_log": "FULL_LOG",
+  "truncated": false,
+  "duration_ms": 0
+}

@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "tool": "logreduce",
+  "version": "0.1.0",
+  "kind": "go-test",
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "findings": [
+    {
+      "file": "main_test.go",
+      "line": 10,
+      "severity": "error",
+      "message": "main_test.go:10: expected 2, got 3",
+      "test": "TestAdd",
+      "context": [
+        "=== RUN   TestAdd",
+        "    main_test.go:10: expected 2, got 3",
+        "--- FAIL: TestAdd (0.00s)"
+      ]
+    }
+  ],
+  "unparsed": 0,
+  "full_log": "FULL_LOG",
+  "truncated": false,
+  "duration_ms": 0
+}

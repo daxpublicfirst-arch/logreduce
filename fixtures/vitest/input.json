@@ -1,0 +1,39 @@
+{
+  "numTotalTests": 3,
+  "numPassedTests": 1,
+  "numFailedTests": 2,
+  "numPendingTests": 0,
+  "testResults": [
+    {
+      "name": "src/a.test.ts",
+      "assertionResults": [
+        {
+          "title": "adds",
+          "fullName": "math adds",
+          "status": "failed",
+          "failureMessages": ["AssertionError: expected 1 to be 2\n    at src/a.test.ts:12:15"],
+          "location": {"line": 12, "column": 15}
+        },
+        {
+          "title": "subtracts",
+          "fullName": "math subtracts",
+          "status": "passed",
+          "failureMessages": [],
+          "location": {"line": 20, "column": 5}
+        }
+      ]
+    },
+    {
+      "name": "src/b.test.ts",
+      "assertionResults": [
+        {
+          "title": "greets",
+          "fullName": "greet greets",
+          "status": "failed",
+          "failureMessages": ["AssertionError: expected 'hi' to be 'hello'"],
+          "location": {"line": 7, "column": 3}
+        }
+      ]
+    }
+  ]
+}

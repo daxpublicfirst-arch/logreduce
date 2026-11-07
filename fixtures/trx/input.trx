@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Results>
+    <UnitTestResult testName="CalculatorTests.Adds" outcome="Passed" duration="00:00:00.001" />
+    <UnitTestResult testName="CalculatorTests.Divides" outcome="Failed" duration="00:00:00.002">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 2
+Actual: 3</Message>
+          <StackTrace>   at CalculatorTests.Divides() in C:\work\calc\CalculatorTests.cs:line 42
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <ResultSummary>
+    <Counters total="2" executed="2" passed="1" failed="1" error="0" notExecuted="0" />
+  </ResultSummary>
+</TestRun>

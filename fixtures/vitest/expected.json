@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "tool": "logreduce",
+  "version": "0.1.0",
+  "kind": "vitest",
+  "summary": {
+    "total": 3,
+    "passed": 1,
+    "failed": 2,
+    "errors": 0,
+    "skipped": 0
+  },
+  "findings": [
+    {
+      "file": "src/a.test.ts",
+      "line": 12,
+      "severity": "error",
+      "message": "AssertionError: expected 1 to be 2",
+      "test": "math adds",
+      "context": [
+        "AssertionError: expected 1 to be 2",
+        "at src/a.test.ts:12:15"
+      ]
+    },
+    {
+      "file": "src/b.test.ts",
+      "line": 7,
+      "severity": "error",
+      "message": "AssertionError: expected 'hi' to be 'hello'",
+      "test": "greet greets",
+      "context": [
+        "AssertionError: expected 'hi' to be 'hello'"
+      ]
+    }
+  ],
+  "unparsed": 0,
+  "full_log": "FULL_LOG",
+  "truncated": false,
+  "duration_ms": 0
+}
