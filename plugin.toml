@@ -1,0 +1,12 @@
+name = "logreduce"
+version = "0.1.0"
+kind = "cli"
+entry = "bin/logreduce"
+protocol = "arabica-plugin-v1"
+commands = ["reduce", "self-test", "doctor", "version"]
+about = "Reduce a build, test or lint log to findings with file:line and context."
+example = "logreduce reduce --kind vitest --log test.log --out ./out --json"
+permissions = { read = ["--log"], write = ["--out"], network = false }
+limits = { input_mb = 200, timeout_s = 60 }
+license = "MIT"
+source = "https://github.com/daxpublicfirst-arch/logreduce"
