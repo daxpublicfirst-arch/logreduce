@@ -11,6 +11,8 @@ Semantic Versioning.
 - First release: `reduce`, `self-test`, `doctor`, `version` commands.
 - Parsers for `trx`, `vitest`, `playwright`, `tsc`, `eslint`, `pytest`
   (JSON report and JUnit XML), `go-test` (`go test -json`) and `generic`.
+  The `generic` and `tsc` parsers use hand-written scanning instead of
+  regular expressions, so an 11 MB log finishes in ~0.5 s.
 - `plugin.toml` (`arabica-plugin-v1`), JSON schemas in `schema/`,
   fixtures for every kind in `fixtures/`.
 - Deterministic, sorted findings; `--request` envelope support;

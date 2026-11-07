@@ -188,3 +188,35 @@ func TestTSCUnparsed(t *testing.T) {
 		t.Fatalf("want 2 findings (1 parsed + 1 raw), got %d", len(res.findings))
 	}
 }
+
+func TestTSCLooseForm(t *testing.T) {
+	res, err := parseTSC([]byte("src/a.ts:12:3: error TS2322: Type 'string' is not assignable to type 'number'.\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.findings) != 1 {
+		t.Fatalf("want 1 finding, got %d", len(res.findings))
+	}
+	f := res.findings[0]
+	if f.File != "src/a.ts" || f.Line != 12 || f.Severity != "error" || f.Message != "TS2322: Type 'string' is not assignable to type 'number'." {
+		t.Fatalf("loose form wrong: %+v", f)
+	}
+}
+
+func TestGenericWordBoundaries(t *testing.T) {
+	// "terror" contains "error" but is not a failure word; "ERROR"
+	// in capitals is one. A timestamp (12:34) is not a file:line.
+	res, err := parseGeneric([]byte("the terror of it all\n12:34 ERROR: boom\nsrc/x.go:9: failed to start\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(res.findings) != 2 {
+		t.Fatalf("want 2 findings, got %d: %+v", len(res.findings), res.findings)
+	}
+	if res.findings[0].File != "" || res.findings[0].Line != 0 {
+		t.Fatalf("timestamp line should have no file:line: %+v", res.findings[0])
+	}
+	if res.findings[1].File != "src/x.go" || res.findings[1].Line != 9 {
+		t.Fatalf("file:line wrong: %+v", res.findings[1])
+	}
+}

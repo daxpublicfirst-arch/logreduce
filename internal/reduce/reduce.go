@@ -331,8 +331,12 @@ func firstLine(s string) string {
 	return ""
 }
 
-// stripANSI removes ANSI escape sequences from s.
+// stripANSI removes ANSI escape sequences from s. Fast path: most log
+// lines contain no ESC byte at all, so return them unchanged.
 func stripANSI(s string) string {
+	if strings.IndexByte(s, 0x1b) < 0 {
+		return s
+	}
 	var b strings.Builder
 	b.Grow(len(s))
 	for i := 0; i < len(s); i++ {

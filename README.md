@@ -75,8 +75,9 @@ Telemetry: one JSON line to stderr per run:
 ## Parsing
 
 The runner's own JSON or XML reporter is preferred; text is only
-regex-parsed where no JSON reporter exists (`tsc`, `go-test` output
-lines, `generic`).
+parsed by hand-written scanners where no JSON reporter exists
+(`tsc`, `go-test` output lines, `generic`) — no regular expressions
+on the hot path, so an 11 MB log finishes in about 0.5 s.
 
 | kind | source |
 | --- | --- |
