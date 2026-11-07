@@ -76,10 +76,14 @@ func parseVitest(data []byte) (*parseResult, error) {
 					file, line = f, ln
 				}
 			}
+			ctx, cut := contextFromText(joined)
+			if cut {
+				res.truncated = true
+			}
 			res.findings = append(res.findings, Finding{
 				File: file, Line: line, Severity: "error",
 				Message: truncateMsg(msg, 500), Test: firstNonEmpty(a.FullName, a.Title),
-				Context: contextFromText(joined),
+				Context: ctx,
 			})
 		}
 	}

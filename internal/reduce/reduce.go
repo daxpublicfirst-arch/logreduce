@@ -20,8 +20,10 @@ const Version = "0.1.0"
 // ToolName is the tool name used in output and telemetry.
 const ToolName = "logreduce"
 
-// MaxInputBytes is the input limit from plugin.toml (200 MB).
-const MaxInputBytes = 200 * 1024 * 1024
+// MaxInputBytes is the input limit from plugin.toml (200 MB). It is a
+// variable, not a constant, so tests can lower it to exercise the
+// truncation path without creating a 200 MB file.
+var MaxInputBytes int64 = 200 * 1024 * 1024
 
 // MaxFindings caps the findings list; beyond it Truncated is set.
 const MaxFindings = 1000

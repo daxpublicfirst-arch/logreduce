@@ -100,10 +100,14 @@ func parsePlaywright(data []byte) (*parseResult, error) {
 					file, line = r.Location.File, r.Location.Line
 				}
 				testName := joinTitles(suiteTitle, spec.Title, t.Title)
+				ctx, cut := contextFromText(ctxText)
+				if cut {
+					res.truncated = true
+				}
 				res.findings = append(res.findings, Finding{
 					File: file, Line: line, Severity: "error",
 					Message: truncateMsg(msg, 500), Test: testName,
-					Context: contextFromText(ctxText),
+					Context: ctx,
 				})
 			}
 		}

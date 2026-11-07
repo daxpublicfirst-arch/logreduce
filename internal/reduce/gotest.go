@@ -60,7 +60,10 @@ func parseGoTest(data []byte) (*parseResult, error) {
 				outs := outputs[ev.Test]
 				file, ln := goFileLineFromOutputs(outs)
 				msg := goFailMessage(ev.Test, outs)
-				ctx := lastNonEmpty(outs, MaxContextLines)
+				ctx, cut := lastNonEmpty(outs, MaxContextLines)
+				if cut {
+					res.truncated = true
+				}
 				res.findings = append(res.findings, Finding{
 					File: file, Line: ln, Severity: "error",
 					Message: truncateMsg(msg, 500), Test: ev.Test, Context: ctx,
@@ -110,7 +113,7 @@ func goFailMessage(test string, outs []string) string {
 	return "Test failed: " + test
 }
 
-func lastNonEmpty(outs []string, n int) []string {
+func lastNonEmpty(outs []string, n int) ([]string, bool) {
 	var cleaned []string
 	for _, l := range outs {
 		l = strings.TrimRight(l, " \t\r")
@@ -120,7 +123,7 @@ func lastNonEmpty(outs []string, n int) []string {
 		cleaned = append(cleaned, l)
 	}
 	if len(cleaned) > n {
-		cleaned = cleaned[len(cleaned)-n:]
+		return cleaned[len(cleaned)-n:], true
 	}
-	return cleaned
+	return cleaned, false
 }

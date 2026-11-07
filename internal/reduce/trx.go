@@ -85,7 +85,10 @@ func parseTRX(data []byte) (*parseResult, error) {
 			msg = "Test failed: " + t.TestName
 		}
 		file, line := trxFileLine(t.Output.ErrorInfo.StackTrace)
-		ctx := contextFromText(t.Output.ErrorInfo.Message, t.Output.ErrorInfo.StackTrace)
+		ctx, cut := contextFromText(t.Output.ErrorInfo.Message, t.Output.ErrorInfo.StackTrace)
+		if cut {
+			res.truncated = true
+		}
 		res.findings = append(res.findings, Finding{
 			File: file, Line: line, Severity: "error",
 			Message: truncateMsg(msg, 500), Test: t.TestName, Context: ctx,
@@ -123,7 +126,9 @@ func trxFileLine(stack string) (string, int) {
 }
 
 // contextFromText builds up to MaxContextLines from message + stack trace.
-func contextFromText(parts ...string) []string {
+// It reports whether lines were cut, so Reduce can set Truncated: the
+// cap lives here for memory reasons, but the flag lives in one place.
+func contextFromText(parts ...string) ([]string, bool) {
 	var out []string
 	for _, p := range parts {
 		for _, l := range strings.Split(stripANSI(p), "\n") {
@@ -133,9 +138,9 @@ func contextFromText(parts ...string) []string {
 			}
 			out = append(out, l)
 			if len(out) >= MaxContextLines {
-				return out
+				return out, true
 			}
 		}
 	}
-	return out
+	return out, false
 }

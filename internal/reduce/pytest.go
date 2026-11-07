@@ -3,6 +3,7 @@ package reduce
 import (
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -80,10 +81,14 @@ func parsePytestJSON(data []byte) (*parseResult, error) {
 		if msg == "" {
 			msg = "Test failed: " + t.NodeID
 		}
+		ctx, cut := contextFromText(longrepr)
+		if cut {
+			res.truncated = true
+		}
 		res.findings = append(res.findings, Finding{
 			File: file, Line: line, Severity: "error",
 			Message: truncateMsg(msg, 500), Test: t.NodeID,
-			Context: contextFromText(longrepr),
+			Context: ctx,
 		})
 	}
 	if rep.Summary != nil {
@@ -94,11 +99,22 @@ func parsePytestJSON(data []byte) (*parseResult, error) {
 	return res, nil
 }
 
-// longrepr may be a string or a list of strings / objects.
+// longrepr may be a string, a list of strings / objects, or an object
+// with reprcrash {path, lineno, message} (pytest's crash report).
 func longreprString(raw json.RawMessage) string {
 	var s string
 	if err := json.Unmarshal(raw, &s); err == nil {
 		return s
+	}
+	var crash struct {
+		Reprcrash *struct {
+			Path    string `json:"path"`
+			Lineno  int    `json:"lineno"`
+			Message string `json:"message"`
+		} `json:"reprcrash"`
+	}
+	if err := json.Unmarshal(raw, &crash); err == nil && crash.Reprcrash != nil {
+		return fmt.Sprintf("%s:%d: %s", crash.Reprcrash.Path, crash.Reprcrash.Lineno, crash.Reprcrash.Message)
 	}
 	var arr []json.RawMessage
 	if err := json.Unmarshal(raw, &arr); err == nil {
@@ -227,10 +243,14 @@ func parsePytestJUnit(data []byte) (*parseResult, error) {
 			if msg == "" {
 				msg = "Test failed: " + tc.Name
 			}
+			ctx, cut := contextFromText(f.Text)
+			if cut {
+				res.truncated = true
+			}
 			res.findings = append(res.findings, Finding{
 				File: file, Line: line, Severity: "error",
 				Message: truncateMsg(msg, 500), Test: tc.Classname + "::" + tc.Name,
-				Context: contextFromText(f.Text),
+				Context: ctx,
 			})
 		}
 	}
