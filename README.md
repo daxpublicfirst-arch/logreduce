@@ -115,7 +115,11 @@ Requires Go 1.23+.
 ```sh
 make build          # build bin/logreduce
 make test           # go test ./...
-make check          # fmt + vet + test + self-test + doctor
+make check          # fmt + vet + validate + test + self-test + doctor
+make cover          # test coverage report (whole module: ~82%)
+make race           # go test -race ./... (slower; not part of check)
+make fuzz           # fuzz every parser 30 s each
+make validate       # check plugin.toml + schemas against the contract
 ./bin/logreduce self-test   # every fixture in fixtures/ must match
 ./bin/logreduce doctor      # runtime checks
 ```
@@ -126,6 +130,19 @@ expected output matches. Comparison normalises `duration_ms` to 0
 and `full_log` to a placeholder on both sides, because absolute
 paths differ per machine; `expected.json` is otherwise the exact
 stdout JSON.
+
+`reduce` runs under a 60 s watchdog (`plugin.toml` `limits.timeout_s`):
+if a run takes longer it prints a `TIMEOUT` error and exits 3 instead
+of being killed with no output. A 200 MB log takes ~25 s on a loaded
+VM, so the margin is real but not huge.
+
+Full testing notes — coverage numbers, fuzzing, performance
+measurements, clean-clone verification, ARM64 execution under qemu —
+live in [`docs/TESTING.md`](docs/TESTING.md). Design rationale lives
+in [`docs/DESIGN.md`](docs/DESIGN.md) and
+[`docs/DECISIONS.md`](docs/DECISIONS.md); real-world verification
+(real runner logs and public sample files) in
+[`docs/REAL_WORLD.md`](docs/REAL_WORLD.md).
 
 ## Release
 
@@ -138,6 +155,11 @@ plus `logreduce-0.1.0-linux-*.tar.gz` tarballs and `dist/sha256sum.txt`.
 Binaries are build artifacts and are not committed to git; CI builds
 them on every push to `main` (see below).
 
+The build is reproducible: two `make release` runs from the same
+source produce byte-identical files (verified with `diff` on
+`dist/sha256sum.txt`). Verify a release with
+`cd dist && sha256sum -c sha256sum.txt`.
+
 The `v0.1.0` tag is created from the `main` head after the release
 commit lands, e.g. `git tag v0.1.0 && git push --tags`, and a GitHub
 Release is made from the `dist/` artifacts. The tag cannot be created
@@ -147,13 +169,13 @@ create-release operation).
 ## CI
 
 The CI workflow (`.github/workflows/ci.yml`, in the repo's
-accompanying files) runs `make check` and `make release` on every
-push to `main`. Note: the Muse GitHub App cannot write
-`.github/workflows/` files (GitHub returns 403 for workflow files
-unless the app has the `workflows` permission), so that one file
-could not be committed from this session — add it from your own
-checkout with `git add .github/workflows/ci.yml && git commit &&
-git push`, or via the GitHub web UI.
+accompanying files) runs `make check`, `make race`, `make cover`,
+`make validate` and `make release` on every push to `main`. Note: the
+Muse GitHub App cannot write `.github/workflows/` files (GitHub
+returns 403 for workflow files unless the app has the `workflows`
+permission), so that one file could not be committed from this session
+— add it from your own checkout with `git add .github/workflows/ci.yml
+&& git commit && git push`, or via the GitHub web UI.
 
 ## Layout
 
@@ -163,7 +185,10 @@ logreduce/
   cmd/logreduce/main.go
   internal/reduce/{reduce,trx,vitest,playwright,tsc,eslint,pytest,gotest,generic}.go
   schema/{request,response,error,telemetry}.json
-  fixtures/...
+  fixtures/...           # hand-written fixtures (self-test)
+  fixtures-real/...      # real runner logs + public samples (unit tests)
+  scripts/validate.py    # plugin.toml + schema validation
+  docs/{DESIGN,DECISIONS,TESTING,REAL_WORLD}.md
   plugin.toml
   README.md
   LICENSE

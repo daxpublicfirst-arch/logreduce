@@ -64,8 +64,8 @@ release: clean
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GO) build -trimpath -buildvcs=false -ldflags "-s -w -buildid=" -o dist/logreduce-linux-amd64 ./cmd/logreduce
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 $(GO) build -trimpath -buildvcs=false -ldflags "-s -w -buildid=" -o dist/logreduce-linux-arm64 ./cmd/logreduce
 	cp plugin.toml README.md LICENSE CHANGELOG.md dist/
-	tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner -I 'gzip -n' -cf dist/logreduce-$(VERSION)-linux-amd64.tar.gz -C dist logreduce-linux-amd64 plugin.toml README.md LICENSE CHANGELOG.md
-	tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner -I 'gzip -n' -cf dist/logreduce-$(VERSION)-linux-arm64.tar.gz -C dist logreduce-linux-arm64 plugin.toml README.md LICENSE CHANGELOG.md
+	tar --sort=name --mtime='@0' --clamp-mtime --owner=0 --group=0 --numeric-owner --pax-option=delete=atime,delete=ctime -I 'gzip -n' -cf dist/logreduce-$(VERSION)-linux-amd64.tar.gz -C dist logreduce-linux-amd64 plugin.toml README.md LICENSE CHANGELOG.md
+	tar --sort=name --mtime='@0' --clamp-mtime --owner=0 --group=0 --numeric-owner --pax-option=delete=atime,delete=ctime -I 'gzip -n' -cf dist/logreduce-$(VERSION)-linux-arm64.tar.gz -C dist logreduce-linux-arm64 plugin.toml README.md LICENSE CHANGELOG.md
 	cd dist && sha256sum logreduce-$(VERSION)-linux-amd64.tar.gz logreduce-$(VERSION)-linux-arm64.tar.gz logreduce-linux-amd64 logreduce-linux-arm64 > sha256sum.txt
 	ls -lh dist/
 
